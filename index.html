@@ -810,6 +810,11 @@
         <div class="card-title">下修改单/取消单/补单</div>
         <div class="card-desc">修改单 · 取消单 · 补单流程</div>
       </div>
+      <div class="select-card" onclick="selectTask('发货')">
+        <div class="card-icon icon-gold">🚚</div>
+        <div class="card-title">发货</div>
+        <div class="card-desc">EXW / 非EXW 发货流程</div>
+      </div>
     </div>
   </div>
 
@@ -838,6 +843,30 @@
         <div class="card-icon icon-blue">➕</div>
         <div class="card-title">补单</div>
         <div class="card-desc">增补订单数量</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel 2c: 发货条款选择 ===== -->
+  <div class="panel" id="panel2c">
+    <button class="back-link" onclick="goBack(2)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+      重新选择事项
+    </button>
+    <div class="section-label">
+      <h2>请选择订单条款</h2>
+      <p>当前：<strong id="currentLevel3"></strong> · 发货</p>
+    </div>
+    <div class="select-grid cols-2">
+      <div class="select-card" onclick="selectShippingType('EXW')">
+        <div class="card-icon icon-gold">🏭</div>
+        <div class="card-title">EXW</div>
+        <div class="card-desc">工厂交货条款</div>
+      </div>
+      <div class="select-card" onclick="selectShippingType('非EXW')">
+        <div class="card-icon icon-teal">🚢</div>
+        <div class="card-title">非EXW</div>
+        <div class="card-desc">非工厂交货条款</div>
       </div>
     </div>
   </div>
@@ -892,14 +921,15 @@
 let selectedLevel = '';
 let selectedTask = '';
 let selectedModifyType = '';
+let selectedShippingType = '';
 let completed = false;
 
 // ===== Navigation =====
 function showPanel(n) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel' + n).classList.add('active');
-  var totalSteps = (selectedTask === '修改单') ? 4 : 3;
-  var panelMap = (selectedTask === '修改单') ? [1, 2, '2b', 3] : [1, 2, 3];
+  var totalSteps = (selectedTask === '修改单' || selectedTask === '发货') ? 4 : 3;
+  var panelMap = (selectedTask === '修改单') ? [1, 2, '2b', 3] : (selectedTask === '发货') ? [1, 2, '2c', 3] : [1, 2, 3];
   for (var i = 0; i < totalSteps; i++) {
     var bcId = 'navBc' + (i + 1);
     var bc = document.getElementById(bcId);
@@ -915,7 +945,7 @@ function showPanel(n) {
   var sc3 = document.getElementById('sc3');
   var bc3 = document.getElementById('navBc3');
   var bc4 = document.getElementById('navBc4');
-  if (selectedTask !== '修改单') {
+  if (selectedTask !== '修改单' && selectedTask !== '发货') {
     if (sc3) sc3.style.display = 'none';
     if (bc3) { bc3.textContent = '看流程'; bc3.style.display = ''; }
     if (bc4) bc4.style.display = 'none';
@@ -938,8 +968,12 @@ function selectTask(task) {
   if (task === '修改单') {
     document.getElementById('currentLevel2').textContent = selectedLevel + '组';
     showPanel('2b');
+  } else if (task === '发货') {
+    document.getElementById('currentLevel3').textContent = selectedLevel + '组';
+    showPanel('2c');
   } else {
     selectedModifyType = '';
+    selectedShippingType = '';
     renderFlow();
     showPanel(3);
     completed = false;
@@ -953,9 +987,16 @@ function selectModifyType(type) {
   completed = false;
 }
 
+function selectShippingType(type) {
+  selectedShippingType = type;
+  renderFlow();
+  showPanel(3);
+  completed = false;
+}
+
 function goBack(toPanel) {
-  if (toPanel === 1) { selectedLevel = ''; selectedTask = ''; selectedModifyType = ''; showPanel(1); }
-  else if (toPanel === 2) { selectedTask = ''; selectedModifyType = ''; showPanel(2); }
+  if (toPanel === 1) { selectedLevel = ''; selectedTask = ''; selectedModifyType = ''; selectedShippingType = ''; showPanel(1); }
+  else if (toPanel === 2) { selectedTask = ''; selectedModifyType = ''; selectedShippingType = ''; showPanel(2); }
 }
 
 function backToHome() {
@@ -1071,6 +1112,53 @@ function getFlowData(level, task) {
 
     data.icon = iconMap[mType] || '🔄';
     data.iconClass = iconClassMap[mType] || 'icon-teal';
+    data.title = title;
+    data.desc = desc;
+    data.tagTask = tagTask;
+    data.sections.push({
+      icon: data.icon,
+      iconClass: data.iconClass,
+      title: title,
+      subtitle: desc,
+      steps: steps
+    });
+  }
+
+  if (task === '发货') {
+    var sType = selectedShippingType || '';
+    var steps = [];
+    var title = '', desc = '', tagTask = '';
+
+    if (sType === 'EXW') {
+      title = 'EXW 发货流程';
+      desc = '尾款 → 杂费 → 箱唛 → 通知人员 → 车辆信息';
+      tagTask = '发货 EXW';
+      steps = [
+        { num: '①', html: '确保<strong>尾款已到账</strong>' },
+        { num: '②', html: '确保<strong>杂费已结清</strong><br><span style="color:#9ca0ab;font-size:0.88em">装卸费 · 拼柜费 · 国内运费等</span>' },
+        { num: '③', html: '至少<strong>提前一天</strong>发送箱唛给<strong>跟单</strong>' },
+        { num: '④', html: '至少<strong>提前一天</strong>通知以下人员发货时间<br><span style="color:#9ca0ab;font-size:0.88em"><strong>唐工</strong> · <strong>杨小玲</strong> · <strong>项目跟单</strong></span>' },
+        { num: '⑤', html: '发货当天提前告知<strong>项目跟单</strong>车辆与集装箱信息' }
+      ];
+    } else if (sType === '非EXW') {
+      title = '非EXW 发货流程';
+      desc = '尾款 → 船期 → 杂费 → 箱唛 → 通知人员 → 车辆信息';
+      tagTask = '发货 非EXW';
+      steps = [
+        { num: '①', html: '确保<strong>尾款已到账</strong>' },
+        { num: '②', html: '确定船期后即告知<strong>船务</strong>出货日期' },
+        { num: '③', html: '确保<strong>杂费已结清</strong><br><span style="color:#9ca0ab;font-size:0.88em">装卸费 · 拼柜费 · 国内运费等</span>' },
+        { num: '④', html: '至少<strong>提前一天</strong>发送箱唛给<strong>跟单</strong>' },
+        { num: '⑤', html: '至少<strong>提前一天</strong>通知以下人员发货时间<br><span style="color:#9ca0ab;font-size:0.88em"><strong>唐工</strong> · <strong>杨小玲</strong> · <strong>项目跟单</strong></span>' },
+        { num: '⑥', html: '发货当天提前告知<strong>项目跟单</strong>车辆与集装箱信息' }
+      ];
+    }
+
+    var iconMap = { 'EXW': '🏭', '非EXW': '🚢' };
+    var iconClassMap = { 'EXW': 'icon-gold', '非EXW': 'icon-teal' };
+
+    data.icon = iconMap[sType] || '🚚';
+    data.iconClass = iconClassMap[sType] || 'icon-gold';
     data.title = title;
     data.desc = desc;
     data.tagTask = tagTask;
