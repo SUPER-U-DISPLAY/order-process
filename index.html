@@ -4,257 +4,387 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>订单项目对接流程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #f5f5f0;
+    --bg-elevated: #fafaf7;
+    --bg-card: #ffffff;
+    --bg-card-hover: #fefefe;
+    --border: rgba(0,0,0,0.07);
+    --border-hover: rgba(0,0,0,0.13);
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6e76;
+    --text-muted: #9ca0ab;
+    --accent: #d94f3b;
+    --accent-soft: rgba(217,79,59,0.08);
+    --accent-glow: rgba(217,79,59,0.15);
+    --green: #2da06a;
+    --green-soft: rgba(45,160,106,0.08);
+    --blue: #3b7dd8;
+    --blue-soft: rgba(59,125,216,0.08);
+    --gold: #c99a2e;
+    --gold-soft: rgba(201,154,46,0.08);
+    --purple: #7c5cbf;
+    --purple-soft: rgba(124,92,191,0.08);
+    --teal: #2a9d8f;
+    --teal-soft: rgba(42,157,143,0.08);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-full: 980px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.1);
+    --font: 'DM Sans', 'Noto Sans SC', -apple-system, sans-serif;
+    --transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", sans-serif;
-    background: #fbfbfd;
-    color: #1d1d1f;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
+  /* ===== Ambient Background ===== */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .ambient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    animation: orbFloat 20s ease-in-out infinite;
+  }
+  .ambient-orb:nth-child(1) {
+    width: 500px; height: 500px;
+    background: var(--accent);
+    top: -15%; right: -10%;
+    opacity: 0.05;
+  }
+  .ambient-orb:nth-child(2) {
+    width: 400px; height: 400px;
+    background: var(--blue);
+    bottom: -10%; left: -8%;
+    opacity: 0.04;
+    animation-delay: -7s;
+  }
+  .ambient-orb:nth-child(3) {
+    width: 300px; height: 300px;
+    background: var(--purple);
+    top: 40%; left: 50%;
+    opacity: 0.03;
+    animation-delay: -14s;
+  }
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 15px) scale(0.95); }
+  }
+
+  /* ===== Noise Texture ===== */
+  .noise {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  /* ===== Layout ===== */
   .container {
-    max-width: 980px;
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
     margin: 0 auto;
     padding: 0 24px;
   }
 
-  /* ===== Nav Bar ===== */
+  /* ===== Nav ===== */
   .nav-bar {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(251,251,253,0.72);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    background: rgba(245,245,240,0.8);
+    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    border-bottom: 1px solid var(--border);
     padding: 0 24px;
   }
   .nav-inner {
-    max-width: 980px;
+    max-width: 720px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 52px;
+    height: 56px;
   }
-  .nav-title {
-    font-size: 1.05em;
-    font-weight: 600;
-    color: #1d1d1f;
-    letter-spacing: -0.01em;
-  }
-  .nav-breadcrumb {
+  .nav-brand {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.78em;
-    color: #86868b;
+    gap: 10px;
   }
-  .nav-breadcrumb .bc-dot {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: #d2d2d7;
-  }
-  .bc-link {
-    color: #86868b;
-    text-decoration: none;
-    transition: color 0.2s;
-    cursor: pointer;
-  }
-  .bc-link:hover { color: #1d1d1f; }
-  .bc-link.active { color: #1d1d1f; font-weight: 600; }
-
-  /* ===== Hero Section ===== */
-  .hero {
-    text-align: center;
-    padding: 80px 0 48px;
-  }
-  .hero-eyebrow {
-    font-size: 0.88em;
-    font-weight: 500;
-    color: #6e6e73;
-    margin-bottom: 8px;
-    letter-spacing: 0.02em;
-  }
-  .hero h1 {
-    font-size: 3em;
+  .nav-logo {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75em;
     font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    color: #1d1d1f;
-    margin-bottom: 16px;
+    color: #fff;
+    box-shadow: 0 2px 12px var(--accent-glow);
   }
-  .hero p {
-    font-size: 1.15em;
-    color: #6e6e73;
-    line-height: 1.5;
-    max-width: 520px;
-    margin: 0 auto;
-    font-weight: 400;
+  .nav-title {
+    font-size: 0.92em;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  /* Stepper */
+  .nav-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .step-pill {
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.72em;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all var(--transition);
+    letter-spacing: 0.01em;
+  }
+  .step-pill.active {
+    color: var(--text-primary);
+    background: rgba(0,0,0,0.06);
+  }
+  .step-pill.done {
+    color: var(--green);
+  }
+  .step-connector {
+    width: 20px;
+    height: 1px;
+    background: var(--border);
+    margin: 0 2px;
+  }
+  .step-connector.done {
+    background: var(--green);
+    opacity: 0.4;
   }
 
   /* ===== Panels ===== */
   .panel {
     display: none;
-    animation: panelIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: panelReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .panel.active { display: block; }
 
-  @keyframes panelIn {
-    from { opacity: 0; transform: translateY(16px); }
+  @keyframes panelReveal {
+    from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 72px 0 40px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: var(--radius-full);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.78em;
+    font-weight: 600;
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .hero h1 {
+    font-size: 2.6em;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 1.02em;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto;
+    font-weight: 400;
   }
 
   /* ===== Section Label ===== */
   .section-label {
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 32px;
   }
   .section-label h2 {
-    font-size: 1.75em;
-    font-weight: 700;
+    font-size: 1.35em;
+    font-weight: 600;
     letter-spacing: -0.02em;
-    color: #1d1d1f;
+    color: var(--text-primary);
     margin-bottom: 6px;
   }
   .section-label p {
-    font-size: 0.95em;
-    color: #86868b;
+    font-size: 0.88em;
+    color: var(--text-secondary);
   }
 
   /* ===== Selection Cards ===== */
   .select-grid {
     display: grid;
-    gap: 16px;
-    padding-bottom: 80px;
+    gap: 14px;
+    padding-bottom: 72px;
   }
-  .select-grid.cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .select-grid.cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .select-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .select-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
 
   .select-card {
-    background: #fff;
-    border-radius: 18px;
-    padding: 40px 28px 36px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 32px 20px 28px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    border: 1px solid rgba(0,0,0,0.06);
+    transition: all var(--transition);
+    border: 1px solid var(--border);
     position: relative;
     overflow: hidden;
   }
-  .select-card::after {
+  .select-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 18px;
+    border-radius: var(--radius);
     opacity: 0;
-    transition: opacity 0.35s;
-    background: linear-gradient(135deg, rgba(0,113,227,0.03), rgba(0,113,227,0.06));
+    transition: opacity var(--transition);
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.04), transparent 70%);
     pointer-events: none;
   }
   .select-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
-    border-color: rgba(0,113,227,0.2);
+    transform: translateY(-3px);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-lg);
+    background: rgba(0,0,0,0.015);
   }
-  .select-card:hover::after { opacity: 1; }
-  .select-card:active { transform: scale(0.98); }
+  .select-card:hover::before { opacity: 1; }
+  .select-card:active { transform: translateY(-1px) scale(0.98); }
 
   .card-icon {
-    width: 56px; height: 56px;
-    border-radius: 16px;
+    width: 52px; height: 52px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6em;
-    margin: 0 auto 20px;
-    background: #f5f5f7;
-    transition: transform 0.35s;
+    font-size: 1.5em;
+    margin: 0 auto 18px;
+    transition: transform var(--transition);
   }
-  .select-card:hover .card-icon { transform: scale(1.08); }
+  .select-card:hover .card-icon { transform: scale(1.1) rotate(-2deg); }
 
   .card-title {
-    font-size: 1.15em;
+    font-size: 1.08em;
     font-weight: 600;
-    color: #1d1d1f;
-    margin-bottom: 6px;
+    color: var(--text-primary);
+    margin-bottom: 5px;
     letter-spacing: -0.01em;
   }
   .card-desc {
-    font-size: 0.82em;
-    color: #86868b;
+    font-size: 0.78em;
+    color: var(--text-muted);
     line-height: 1.45;
   }
 
-  /* Card icon bg tints */
-  .icon-green { background: #e8f8ef; }
-  .icon-blue { background: #e8f0fe; }
-  .icon-gold { background: #fef3e2; }
-  .icon-orange { background: #fde8ec; }
-  .icon-purple { background: #f0e8fe; }
-  .icon-teal { background: #e2f5f0; }
+  .icon-green { background: var(--green-soft); }
+  .icon-blue { background: var(--blue-soft); }
+  .icon-gold { background: var(--gold-soft); }
+  .icon-orange { background: var(--accent-soft); }
+  .icon-purple { background: var(--purple-soft); }
+  .icon-teal { background: var(--teal-soft); }
 
   /* ===== Back Link ===== */
   .back-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #0071e3;
+    color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.88em;
-    font-weight: 400;
+    font-size: 0.85em;
+    font-weight: 500;
     margin-bottom: 28px;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color var(--transition);
     border: none;
     background: none;
     padding: 0;
   }
-  .back-link:hover { color: #0077ed; text-decoration: underline; }
+  .back-link:hover { color: var(--text-primary); }
   .back-link svg { width: 16px; height: 16px; }
 
   /* ===== Result Header ===== */
   .result-header {
-    background: #fff;
-    border-radius: 20px;
-    padding: 36px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(0,0,0,0.06);
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
   }
   .rh-top {
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 20px;
+    gap: 16px;
+    margin-bottom: 18px;
   }
   .rh-icon {
-    width: 52px; height: 52px;
-    border-radius: 14px;
+    width: 48px; height: 48px;
+    border-radius: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6em;
-    background: #f5f5f7;
+    font-size: 1.5em;
     flex-shrink: 0;
   }
   .rh-info h2 {
-    font-size: 1.5em;
+    font-size: 1.35em;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: #1d1d1f;
-    margin-bottom: 4px;
+    color: var(--text-primary);
+    margin-bottom: 3px;
   }
   .rh-info p {
-    font-size: 0.88em;
-    color: #86868b;
+    font-size: 0.84em;
+    color: var(--text-secondary);
   }
   .rh-tags {
     display: flex;
@@ -263,90 +393,89 @@
   }
   .rh-tag {
     padding: 5px 14px;
-    border-radius: 980px;
-    font-size: 0.78em;
-    font-weight: 500;
+    border-radius: var(--radius-full);
+    font-size: 0.75em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
   }
   .rh-tag.level {
-    background: #e8f8ef;
-    color: #1a7f37;
+    background: var(--green-soft);
+    color: var(--green);
   }
   .rh-tag.task {
-    background: #e8f0fe;
-    color: #1a56db;
+    background: var(--blue-soft);
+    color: var(--blue);
   }
 
   /* ===== Progress ===== */
   .progress-wrap {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(0,0,0,0.04);
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
   }
   .progress-bar-bg {
     height: 4px;
-    background: #e8e8ed;
+    background: rgba(255,255,255,0.06);
     border-radius: 2px;
     overflow: hidden;
   }
   .progress-bar-fill {
     height: 100%;
     width: 0%;
-    background: #0071e3;
+    background: linear-gradient(90deg, var(--accent), #f08c4a);
     border-radius: 2px;
-    transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .progress-text {
     text-align: right;
-    font-size: 0.75em;
-    color: #86868b;
+    font-size: 0.72em;
+    color: var(--text-muted);
     margin-top: 8px;
   }
 
   /* ===== Flow Section ===== */
   .flow-section {
-    background: #fff;
-    border-radius: 20px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(0,0,0,0.06);
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
     overflow: hidden;
   }
-
   .flow-header {
-    padding: 20px 28px;
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     gap: 14px;
     cursor: pointer;
     user-select: none;
-    transition: background 0.2s;
+    transition: background var(--transition);
   }
-  .flow-header:hover { background: #fafafa; }
+  .flow-header:hover { background: rgba(0,0,0,0.02); }
 
   .flow-header .f-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
+    width: 38px; height: 38px;
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2em;
-    background: #f5f5f7;
+    font-size: 1.1em;
     flex-shrink: 0;
   }
   .flow-header .f-info { flex: 1; }
   .flow-header h3 {
-    font-size: 1.05em;
+    font-size: 1em;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--text-primary);
     letter-spacing: -0.01em;
   }
   .flow-header .f-sub {
-    font-size: 0.78em;
-    color: #86868b;
+    font-size: 0.75em;
+    color: var(--text-muted);
     margin-top: 2px;
   }
   .flow-header .f-toggle {
-    color: #86868b;
-    font-size: 0.7em;
+    color: var(--text-muted);
+    font-size: 0.65em;
     transition: transform 0.3s;
   }
   .flow-header .f-toggle.collapsed { transform: rotate(-90deg); }
@@ -363,74 +492,77 @@
   .step-item {
     display: flex;
     align-items: flex-start;
-    padding: 16px 28px;
-    gap: 16px;
+    padding: 16px 24px;
+    gap: 14px;
     transition: background 0.15s;
     position: relative;
   }
-  .step-item:hover { background: #fafafa; }
+  .step-item:hover { background: rgba(0,0,0,0.015); }
   .step-item + .step-item {
-    border-top: 1px solid rgba(0,0,0,0.04);
+    border-top: 1px solid var(--border);
   }
 
   .step-num {
-    width: 30px; height: 30px; min-width: 30px;
-    border-radius: 50%;
+    width: 28px; height: 28px; min-width: 28px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.78em;
-    font-weight: 600;
+    font-weight: 700;
     color: #fff;
-    background: #0071e3;
+    background: var(--accent);
     margin-top: 2px;
+    box-shadow: 0 2px 8px var(--accent-glow);
+    font-family: 'DM Sans', sans-serif;
   }
 
   .step-content {
     flex: 1;
-    line-height: 1.65;
-    font-size: 0.92em;
-    color: #1d1d1f;
-    padding-top: 3px;
+    line-height: 1.7;
+    font-size: 0.9em;
+    color: var(--text-primary);
+    padding-top: 2px;
   }
   .step-content strong {
-    color: #1d1d1f;
+    color: var(--text-primary);
     font-weight: 600;
   }
   .step-content .hl {
     display: inline-block;
-    background: #f0f0f2;
+    background: rgba(0,0,0,0.05);
     padding: 1px 8px;
     border-radius: 6px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--text-primary);
     font-size: 0.95em;
   }
 
   /* ===== Checkbox ===== */
   .check-btn {
-    width: 28px; height: 28px; min-width: 28px;
-    border-radius: 50%;
-    border: 1.5px solid #d2d2d7;
-    background: #fff;
+    width: 26px; height: 26px; min-width: 26px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(0,0,0,0.15);
+    background: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     margin-top: 3px;
   }
   .check-btn:hover {
-    border-color: #0071e3;
-    box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
   .check-btn.checked {
-    border-color: #0071e3;
-    background: #0071e3;
+    border-color: var(--green);
+    background: var(--green);
+    box-shadow: 0 2px 12px rgba(61,214,140,0.25);
   }
   .check-btn .checkmark {
     color: #fff;
-    font-size: 0.85em;
+    font-size: 0.8em;
     opacity: 0;
     transform: scale(0.5);
     transition: all 0.25s;
@@ -440,13 +572,13 @@
     transform: scale(1);
   }
 
-  /* ===== Completion Banner ===== */
+  /* ===== Completion Overlay ===== */
   .completion-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -458,132 +590,159 @@
   .completion-overlay.show { opacity: 1; pointer-events: auto; }
 
   .completion-card {
-    background: #fff;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
     border-radius: 24px;
-    padding: 56px 48px;
+    padding: 52px 44px;
     text-align: center;
-    max-width: 420px;
+    max-width: 400px;
     width: 90%;
-    transform: scale(0.95) translateY(12px);
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 24px 80px rgba(0,0,0,0.12);
+    transform: scale(0.92) translateY(16px);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-lg);
   }
   .completion-overlay.show .completion-card {
     transform: scale(1) translateY(0);
   }
   .completion-card .c-icon {
-    width: 64px; height: 64px;
+    width: 60px; height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #34c759, #30d158);
+    background: var(--green-soft);
+    border: 2px solid var(--green);
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 24px;
-    font-size: 1.8em;
-    box-shadow: 0 4px 20px rgba(52,199,89,0.3);
+    font-size: 1.6em;
+    color: var(--green);
   }
   .completion-card h2 {
-    font-size: 1.35em;
+    font-size: 1.25em;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--text-primary);
     letter-spacing: -0.02em;
     line-height: 1.4;
     margin-bottom: 10px;
   }
   .completion-card p {
-    font-size: 0.9em;
-    color: #86868b;
+    font-size: 0.88em;
+    color: var(--text-secondary);
     margin-bottom: 32px;
     line-height: 1.5;
   }
   .completion-card .btn-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
   }
 
-  /* ===== Buttons (Apple style) ===== */
+  /* ===== Buttons ===== */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 28px;
-    border-radius: 980px;
-    font-size: 0.92em;
-    font-weight: 500;
+    padding: 11px 26px;
+    border-radius: var(--radius-full);
+    font-size: 0.88em;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.25s;
+    transition: all var(--transition);
     border: none;
     letter-spacing: -0.01em;
+    font-family: var(--font);
   }
   .btn-primary {
-    background: #0071e3;
+    background: var(--accent);
     color: #fff;
+    box-shadow: 0 2px 16px var(--accent-glow);
   }
-  .btn-primary:hover { background: #0077ed; }
+  .btn-primary:hover {
+    background: #d44a33;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 24px var(--accent-glow);
+  }
   .btn-secondary {
     background: transparent;
-    color: #0071e3;
-    border: 1px solid #0071e3;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
   }
-  .btn-secondary:hover { background: rgba(0,113,227,0.04); }
+  .btn-secondary:hover {
+    background: rgba(0,0,0,0.03);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+  }
 
-  /* ===== Confetti (subtle) ===== */
+  /* ===== Confetti ===== */
   .confetti {
     position: fixed;
-    width: 8px; height: 8px;
-    border-radius: 50%;
+    width: 6px; height: 6px;
+    border-radius: 2px;
     z-index: 1001;
     pointer-events: none;
     animation: confettiFall linear forwards;
   }
   @keyframes confettiFall {
-    0% { opacity: 0.8; transform: translateY(0) scale(1); }
-    100% { opacity: 0; transform: translateY(100vh) scale(0.3); }
+    0% { opacity: 0.9; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
   }
 
   /* ===== Footer ===== */
   .footer {
     text-align: center;
-    padding: 64px 0 40px;
-    font-size: 0.75em;
-    color: #86868b;
-    border-top: 1px solid rgba(0,0,0,0.04);
-    margin-top: 40px;
+    padding: 56px 0 36px;
+    font-size: 0.72em;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 36px;
+    letter-spacing: 0.01em;
   }
 
   /* ===== Responsive ===== */
   @media (max-width: 768px) {
-    .hero { padding: 56px 0 36px; }
-    .hero h1 { font-size: 2.2em; }
-    .hero p { font-size: 1em; }
+    .hero { padding: 52px 0 32px; }
+    .hero h1 { font-size: 2em; }
+    .hero p { font-size: 0.92em; }
     .select-grid.cols-3 { grid-template-columns: 1fr; }
     .select-grid.cols-2 { grid-template-columns: 1fr; }
-    .select-card { padding: 32px 24px 28px; }
+    .select-card { padding: 28px 20px 24px; }
     .result-header { padding: 24px; }
-    .step-item { padding: 14px 20px; gap: 12px; }
-    .flow-header { padding: 16px 20px; }
-    .completion-card { padding: 40px 28px; }
+    .step-item { padding: 14px 18px; gap: 12px; }
+    .flow-header { padding: 16px 18px; }
+    .completion-card { padding: 40px 24px; }
   }
   @media (max-width: 480px) {
-    .hero h1 { font-size: 1.8em; }
-    .nav-breadcrumb { display: none; }
+    .hero h1 { font-size: 1.7em; }
+    .nav-stepper { display: none; }
+    .container { padding: 0 16px; }
   }
 </style>
 </head>
 <body>
 
+<!-- Ambient Background -->
+<div class="ambient">
+  <div class="ambient-orb"></div>
+  <div class="ambient-orb"></div>
+  <div class="ambient-orb"></div>
+</div>
+<div class="noise"></div>
+
 <!-- ===== Nav Bar ===== -->
 <nav class="nav-bar">
   <div class="nav-inner">
-    <div class="nav-title">订单流程</div>
-    <div class="nav-breadcrumb">
-      <span class="bc-link active" id="navBc1">选组别</span>
-      <span class="bc-dot"></span>
-      <span class="bc-link" id="navBc2">选事项</span>
-      <span class="bc-dot"></span>
-      <span class="bc-link" id="navBc3">看流程</span>
+    <div class="nav-brand">
+      <div class="nav-logo">OM</div>
+      <div class="nav-title">订单流程</div>
+    </div>
+    <div class="nav-stepper">
+      <span class="step-pill active" id="navBc1">选组别</span>
+      <span class="step-connector" id="sc1"></span>
+      <span class="step-pill" id="navBc2">选事项</span>
+      <span class="step-connector" id="sc2"></span>
+      <span class="step-pill" id="navBc3">选类型</span>
+      <span class="step-connector" id="sc3"></span>
+      <span class="step-pill" id="navBc4">看流程</span>
     </div>
   </div>
 </nav>
@@ -593,8 +752,8 @@
   <!-- ===== Panel 1: 选组别 ===== -->
   <div class="panel active" id="panel1">
     <div class="hero">
-      <p class="hero-eyebrow">内部流程指引</p>
-      <h1>订单项目对接流程</h1>
+      <div class="hero-badge">内部流程指引</div>
+      <h1>订单项目<br>对接流程</h1>
       <p>选择你的组别和要办的事，快速获取对应的操作流程</p>
     </div>
     <div class="section-label">
@@ -648,8 +807,37 @@
       </div>
       <div class="select-card" onclick="selectTask('修改单')">
         <div class="card-icon icon-teal">🔄</div>
-        <div class="card-title">下修改单</div>
-        <div class="card-desc">大货修改单流程</div>
+        <div class="card-title">下修改单/取消单/补单</div>
+        <div class="card-desc">修改单 · 取消单 · 补单流程</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel 2.5: 修改单子类型选择 ===== -->
+  <div class="panel" id="panel2b">
+    <button class="back-link" onclick="goBack(2)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+      重新选择事项
+    </button>
+    <div class="section-label">
+      <h2>请选择类型</h2>
+      <p>当前：<strong id="currentLevel2"></strong> · 修改单/取消单/补单</p>
+    </div>
+    <div class="select-grid cols-3">
+      <div class="select-card" onclick="selectModifyType('修改单')">
+        <div class="card-icon icon-orange">✏️</div>
+        <div class="card-title">修改单</div>
+        <div class="card-desc">对现有订单进行修改</div>
+      </div>
+      <div class="select-card" onclick="selectModifyType('取消单')">
+        <div class="card-icon icon-purple">❌</div>
+        <div class="card-title">取消单</div>
+        <div class="card-desc">取消部分或全部订单</div>
+      </div>
+      <div class="select-card" onclick="selectModifyType('补单')">
+        <div class="card-icon icon-blue">➕</div>
+        <div class="card-title">补单</div>
+        <div class="card-desc">增补订单数量</div>
       </div>
     </div>
   </div>
@@ -703,17 +891,38 @@
 <script>
 let selectedLevel = '';
 let selectedTask = '';
+let selectedModifyType = '';
 let completed = false;
 
 // ===== Navigation =====
 function showPanel(n) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel' + n).classList.add('active');
-  for (let i = 1; i <= 3; i++) {
-    const bc = document.getElementById('navBc' + i);
-    bc.classList.toggle('active', i === n);
-    bc.style.color = i <= n ? '#1d1d1f' : '';
-    bc.style.fontWeight = i === n ? '600' : '';
+  var totalSteps = (selectedTask === '修改单') ? 4 : 3;
+  var panelMap = (selectedTask === '修改单') ? [1, 2, '2b', 3] : [1, 2, 3];
+  for (var i = 0; i < totalSteps; i++) {
+    var bcId = 'navBc' + (i + 1);
+    var bc = document.getElementById(bcId);
+    bc.classList.remove('active', 'done');
+    if (i < panelMap.indexOf(n)) bc.classList.add('done');
+    else if (i === panelMap.indexOf(n)) bc.classList.add('active');
+    if (i < totalSteps - 1) {
+      var sc = document.getElementById('sc' + (i + 1));
+      if (sc) sc.classList.toggle('done', i < panelMap.indexOf(n));
+    }
+  }
+  // Hide/show step 3 connector for non-modify tasks
+  var sc3 = document.getElementById('sc3');
+  var bc3 = document.getElementById('navBc3');
+  var bc4 = document.getElementById('navBc4');
+  if (selectedTask !== '修改单') {
+    if (sc3) sc3.style.display = 'none';
+    if (bc3) { bc3.textContent = '看流程'; bc3.style.display = ''; }
+    if (bc4) bc4.style.display = 'none';
+  } else {
+    if (sc3) sc3.style.display = '';
+    if (bc3) { bc3.textContent = '选类型'; bc3.style.display = ''; }
+    if (bc4) bc4.style.display = '';
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -726,14 +935,27 @@ function selectLevel(level) {
 
 function selectTask(task) {
   selectedTask = task;
+  if (task === '修改单') {
+    document.getElementById('currentLevel2').textContent = selectedLevel + '组';
+    showPanel('2b');
+  } else {
+    selectedModifyType = '';
+    renderFlow();
+    showPanel(3);
+    completed = false;
+  }
+}
+
+function selectModifyType(type) {
+  selectedModifyType = type;
   renderFlow();
   showPanel(3);
   completed = false;
 }
 
 function goBack(toPanel) {
-  if (toPanel === 1) { selectedLevel = ''; showPanel(1); }
-  else if (toPanel === 2) { showPanel(2); }
+  if (toPanel === 1) { selectedLevel = ''; selectedTask = ''; selectedModifyType = ''; showPanel(1); }
+  else if (toPanel === 2) { selectedTask = ''; selectedModifyType = ''; showPanel(2); }
 }
 
 function backToHome() {
@@ -754,9 +976,10 @@ function resetFlow() {
 // ===== Flow Data =====
 function getFlowData(level, task) {
   const isJunior = level === '初级';
+  const isMidSenior = level === '中级' || level === '高级';
   const approver = isJunior ? '玉鹏' : 'Jay';
   const approverTag = isJunior ? '提交给玉鹏' : '提交给Jay';
-  const isModify = task === '修改单';
+  const scheduler = isJunior ? '玉鹏' : 'Jay';
   const data = { sections: [] };
 
   if (task === '设计下单书') {
@@ -768,49 +991,96 @@ function getFlowData(level, task) {
     data.sections.push({
       icon: '🎨', iconClass: 'icon-blue',
       title: '设计下单书',
-      subtitle: approverTag + ' → 排单',
+      subtitle: approverTag + ' → ' + scheduler + '排单',
       steps: [
-        { num: '①', html: '上传文件到<strong>微盘</strong><br><span style="color:#86868b;font-size:0.88em">设计下单书 · 参考资料 · 客户背调表</span>' },
+        { num: '①', html: '上传文件到<strong>微盘</strong><br><span style="color:#9ca0ab;font-size:0.88em">设计下单书 · 参考资料 · 客户背调表</span>' },
         { num: '②', html: '打印 <span class="hl">2份</span> 设计下单书 → 给<strong>组长签名</strong>' },
         { num: '③', html: '提交给 <span class="hl">' + approver + '</span> 审核' },
-        { num: '④', html: '<strong>玉鹏</strong> 与 <strong>Jay</strong> 进行排单' }
+        { num: '④', html: '<span class="hl">' + scheduler + '</span> 进行排单' }
       ]
     });
   }
 
-  if (task === '大货下单书' || task === '修改单') {
-    const prefix = isModify ? '大货修改单' : '大货';
-    data.icon = isModify ? '🔄' : '📦';
-    data.iconClass = isModify ? 'icon-teal' : 'icon-orange';
-    data.title = prefix + '下单书流程';
-    data.desc = isModify ? '修改单的下单书流程与大货下单书同理' : '上传 → 打印 → 建项目 → 建群';
-    data.tagTask = prefix + '下单书';
+  if (task === '大货下单书') {
+    data.icon = '📦';
+    data.iconClass = 'icon-orange';
+    data.title = '大货下单书流程';
+    data.desc = '上传 → 打印 → 建项目 → 建群';
+    data.tagTask = '大货下单书';
     data.sections.push({
-      icon: isModify ? '🔄' : '📦', iconClass: isModify ? 'icon-teal' : 'icon-orange',
-      title: prefix + '下单书',
-      subtitle: isModify ? '修改单下单书流程与大货同理' : '上传 → 打印分发 → 建项目建群',
-      steps: [
-        { num: '①', html: '上传文件到<strong>微盘</strong>' },
-        { num: '②', html: '打印 <span class="hl">4份</span> 纸质版下单书<br><span style="color:#86868b;font-size:0.88em"><strong>LEO</strong> × 1 ｜ <strong>对应组长</strong> × 1 ｜ <strong>唐工</strong> × 2</span>' },
-        { num: '③', html: '如需<strong>打色样</strong> → 额外打印 <span class="hl">1份</span> 给唐工' },
-        { num: '④', html: '根据纸质单的<strong>项目时间</strong>创建<strong>大管家项目</strong>' },
-        { num: '⑤', html: '创建<strong>企业微信项目群</strong>，并将下单文件发送到群里' }
-      ]
+      icon: '📦', iconClass: 'icon-orange',
+      title: '大货下单书',
+      subtitle: '上传 → 打印分发 → 建项目建群',
+      steps: (function() {
+        var printInfo, printDetail;
+        if (level === '高级') {
+          printInfo = '打印 <span class="hl">3份</span> 纸质版下单书';
+          printDetail = '<strong>LEO</strong> × 1 ｜ <strong>工艺组长赖鹏程</strong> × 1 ｜ <strong>唐工</strong> × 1';
+        } else {
+          printInfo = '打印 <span class="hl">4份</span> 纸质版下单书';
+          printDetail = '<strong>LEO</strong> × 1 ｜ <strong>业务组长</strong> × 1 ｜ <strong>工艺组长赖鹏程</strong> × 1 ｜ <strong>唐工</strong> × 1';
+        }
+        return [
+          { num: '①', html: '上传文件到<strong>微盘</strong>' },
+          { num: '②', html: printInfo + '<br><span style="color:#9ca0ab;font-size:0.88em">' + printDetail + '</span>' },
+          { num: '③', html: '如需<strong>打色样</strong> → 额外打印 <span class="hl">1份</span> 给唐工' },
+          { num: '④', html: '根据纸质单的<strong>项目时间</strong>创建<strong>大管家项目</strong>' },
+          { num: '⑤', html: '创建<strong>企业微信项目群</strong>，并将下单文件发送到群里' }
+        ];
+      })()
     });
-    if (isModify) {
-      data.sections.push({
-        icon: '✅', iconClass: 'icon-purple',
-        title: prefix + '确认书',
-        subtitle: '修改单确认书流程与大货同理',
-        steps: [
-          { num: '⑥', html: '打印 <span class="hl">1份</span> 给<strong>工艺师对单</strong>' },
-          { num: '⑦', html: '对单后上传下单文件到<strong>微盘</strong><br><span style="color:#86868b;font-size:0.88em">确认书 · 客户背调表 · 外购清单 · 色样图片 · 插座参考等</span>' },
-          { num: '⑧', html: '打印确认书分发<br><span style="color:#86868b;font-size:0.88em"><strong>无价格 ×4</strong>：唐工×1 ｜ 小玲×1 ｜ 老赖×2<br><strong>有价格 ×2</strong>：明哥×1 ｜ 业务组长×1</span>' },
-          { num: '⑨', html: '如有<strong>外购</strong> → 打印 <span class="hl">1份</span> 给<strong>杨小玲</strong>' },
-          { num: '⑩', html: '系统<strong>点击完成</strong>该步骤流程' }
-        ]
-      });
+  }
+
+  if (task === '修改单') {
+    var mType = selectedModifyType || '';
+    var steps = [];
+    var title = '', desc = '', tagTask = '';
+
+    if (mType === '修改单') {
+      title = '修改单流程';
+      desc = '告知组长 → 核实费用 → 安排下单书/确认书 → 更正资料';
+      tagTask = '修改单';
+      steps = [
+        { num: '①', html: '先告知<strong>业务组长</strong>修改的原因' },
+        { num: '②', html: '核实是否产生<strong>额外费用</strong>，由谁承担费用' },
+        { num: '③', html: '与大货单流程一致，安排下单书、确认书<br><span style="color:#9ca0ab;font-size:0.88em">命名示范：Ken美国服装店大货确认书-修改单</span>' },
+        { num: '④', html: '更正电子版资料到<strong>云盘文件夹</strong>' }
+      ];
+    } else if (mType === '取消单') {
+      title = '取消单流程';
+      desc = '告知组长 → 核实进度 → 安排下单书/确认书 → 更正资料';
+      tagTask = '取消单';
+      steps = [
+        { num: '①', html: '先告知<strong>业务组长</strong>取消的原因' },
+        { num: '②', html: '与<strong>跟单</strong>核实被取消物品生产进度，确认是否可以取消' },
+        { num: '③', html: '与大货单流程一致，安排下单书、确认书<br><span style="color:#9ca0ab;font-size:0.88em">命名示范：Ken美国服装店大货确认书-取消单</span>' },
+        { num: '④', html: '更正电子版资料到<strong>云盘文件夹</strong>' }
+      ];
+    } else if (mType === '补单') {
+      title = '补单流程';
+      desc = '告知组长 → 安排下单书/确认书';
+      tagTask = '补单';
+      steps = [
+        { num: '①', html: '先告知<strong>业务组长</strong>增补的原因' },
+        { num: '②', html: '与大货单流程一致，安排下单书、确认书<br><span style="color:#9ca0ab;font-size:0.88em">命名示范：Ken美国服装店大货确认书-补单</span>' }
+      ];
     }
+
+    var iconMap = { '修改单': '✏️', '取消单': '❌', '补单': '➕' };
+    var iconClassMap = { '修改单': 'icon-orange', '取消单': 'icon-purple', '补单': 'icon-blue' };
+
+    data.icon = iconMap[mType] || '🔄';
+    data.iconClass = iconClassMap[mType] || 'icon-teal';
+    data.title = title;
+    data.desc = desc;
+    data.tagTask = tagTask;
+    data.sections.push({
+      icon: data.icon,
+      iconClass: data.iconClass,
+      title: title,
+      subtitle: desc,
+      steps: steps
+    });
   }
 
   if (task === '大货确认书') {
@@ -824,9 +1094,9 @@ function getFlowData(level, task) {
       title: '大货确认书',
       subtitle: '对单 → 上传微盘 → 打印分发 → 系统完成',
       steps: [
-        { num: '⑥', html: '打印 <span class="hl">1份</span> 给<strong>工艺师对单</strong>' },
-        { num: '⑦', html: '对单后上传下单文件到<strong>微盘</strong><br><span style="color:#86868b;font-size:0.88em">大货确认书 · 客户背调表 · 外购清单 · 色样图片 · 插座参考等</span>' },
-        { num: '⑧', html: '打印确认书分发<br><span style="color:#86868b;font-size:0.88em"><strong>无价格 ×4</strong>：唐工×1 ｜ 小玲×1 ｜ 老赖×2<br><strong>有价格 ×2</strong>：明哥×1 ｜ 业务组长×1</span>' },
+        { num: '⑥', html: '先让<strong>工艺师对单</strong>' },
+        { num: '⑦', html: '对单后上传下单文件到<strong>微盘</strong><br><span style="color:#9ca0ab;font-size:0.88em">大货确认书 · 客户背调表 · 外购清单 · 色样图片 · 插座参考等</span>' },
+        { num: '⑧', html: '打印确认书分发<br><span style="color:#9ca0ab;font-size:0.88em"><strong>无价格 ×4</strong>：唐工×1 ｜ 小玲×1 ｜ 工艺组长赖鹏程×2<br><strong>有价格 ×2</strong>：明哥×1 ｜ 业务组长×1</span>' },
         { num: '⑨', html: '如有<strong>外购</strong> → 打印 <span class="hl">1份</span> 给<strong>杨小玲</strong>' },
         { num: '⑩', html: '系统<strong>点击完成</strong>该步骤流程' }
       ]
@@ -859,9 +1129,10 @@ function renderFlow() {
     html += '<div class="f-sub">' + section.subtitle + '</div></div>';
     html += '<span class="f-toggle">▼</span></div>';
     html += '<div class="flow-body">';
-    section.steps.forEach(step => {
+    section.steps.forEach((step, idx) => {
+      var num = idx + 1;
       html += '<div class="step-item">';
-      html += '<div class="step-num">' + step.num + '</div>';
+      html += '<div class="step-num">' + num + '</div>';
       html += '<div class="step-content">' + step.html + '</div>';
       html += '<button class="check-btn" onclick="toggleCheck(this)"><span class="checkmark">✓</span></button>';
       html += '</div>';
@@ -905,14 +1176,14 @@ function updateProgress() {
 }
 
 function launchConfetti() {
-  const colors = ['#0071e3','#34c759','#ff9500','#af52de','#ff3b30','#5ac8fa','#ff2d55','#ffd60a'];
+  const colors = ['#e8553d','#3dd68c','#f0c05a','#a78bfa','#5b9cf5','#4fd1c5','#ff6b9d','#ffd60a'];
   for (let i = 0; i < 50; i++) {
     const el = document.createElement('div');
     el.className = 'confetti';
     el.style.left = Math.random() * 100 + 'vw';
     el.style.top = '-10px';
     el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.width = (Math.random() * 6 + 4) + 'px';
+    el.style.width = (Math.random() * 5 + 4) + 'px';
     el.style.height = el.style.width;
     el.style.animationDuration = (Math.random() * 2.5 + 2) + 's';
     el.style.animationDelay = (Math.random() * 1) + 's';
