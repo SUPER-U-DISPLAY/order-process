@@ -760,7 +760,7 @@
       <h2>你是哪个组别？</h2>
       <p>选择后进入下一步</p>
     </div>
-    <div class="select-grid cols-3">
+    <div class="select-grid cols-2">
       <div class="select-card" onclick="selectLevel('初级')">
         <div class="card-icon icon-green">🌱</div>
         <div class="card-title">初级组</div>
@@ -775,6 +775,11 @@
         <div class="card-icon icon-gold">🌳</div>
         <div class="card-title">高级组</div>
         <div class="card-desc">高级业务人员</div>
+      </div>
+      <div class="select-card" onclick="selectLevel('资深')">
+        <div class="card-icon icon-purple">🏆</div>
+        <div class="card-title">资深组</div>
+        <div class="card-desc">资深业务人员</div>
       </div>
     </div>
   </div>
@@ -1018,9 +1023,23 @@ function resetFlow() {
 function getFlowData(level, task) {
   const isJunior = level === '初级';
   const isMidSenior = level === '中级' || level === '高级';
-  const approver = isJunior ? '玉鹏' : 'Jay';
-  const approverTag = isJunior ? '提交给玉鹏' : '提交给Jay';
-  const scheduler = isJunior ? '玉鹏' : 'Jay';
+  const isSenior = level === '资深';
+  let approver, approverTag, scheduler;
+  
+  if (isJunior) {
+    approver = '玉鹏';
+    approverTag = '提交给玉鹏';
+    scheduler = '玉鹏';
+  } else if (isSenior) {
+    approver = '许洋';
+    approverTag = '提交给许洋';
+    scheduler = '许洋';
+  } else {
+    approver = 'Jay';
+    approverTag = '提交给Jay';
+    scheduler = 'Jay';
+  }
+  
   const data = { sections: [] };
 
   if (task === '设计下单书') {
@@ -1054,7 +1073,7 @@ function getFlowData(level, task) {
       subtitle: '上传 → 打印分发 → 建项目建群',
       steps: (function() {
         var printInfo, printDetail;
-        if (level === '高级') {
+        if (level === '高级' || level === '资深') {
           printInfo = '打印 <span class="hl">3份</span> 纸质版下单书';
           printDetail = '<strong>LEO</strong> × 1 ｜ <strong>工艺组长赖鹏程</strong> × 1 ｜ <strong>唐工</strong> × 1';
         } else {
@@ -1137,7 +1156,7 @@ function getFlowData(level, task) {
         { num: '①', html: '确保<strong>尾款已到账</strong>' },
         { num: '②', html: '确保<strong>杂费已结清</strong><br><span style="color:#9ca0ab;font-size:0.88em">装卸费 · 拼柜费 · 国内运费等</span>' },
         { num: '③', html: '至少<strong>提前一天</strong>发送箱唛给<strong>跟单</strong>' },
-        { num: '④', html: '至少<strong>提前一天</strong>通知以下人员发货时间<br><span style="color:#9ca0ab;font-size:0.88em"><strong>唐工</strong> · <strong>杨小玲</strong> · <strong>项目跟单</strong></span>' },
+        { num: '④', html: '至少<strong>提前一天</strong>通知以下人员发货时间<br><span style="color:#9ca0ab;font-size:0.88em"><strong>唐工（C类需要通知龙工）</strong> · <strong>杨小玲</strong> · <strong>项目跟单</strong></span>' },
         { num: '⑤', html: '发货当天提前告知<strong>项目跟单</strong>车辆与集装箱信息' }
       ];
     } else if (sType === '非EXW') {
@@ -1149,7 +1168,7 @@ function getFlowData(level, task) {
         { num: '②', html: '确定船期后即告知<strong>船务</strong>出货日期' },
         { num: '③', html: '确保<strong>杂费已结清</strong><br><span style="color:#9ca0ab;font-size:0.88em">装卸费 · 拼柜费 · 国内运费等</span>' },
         { num: '④', html: '至少<strong>提前一天</strong>发送箱唛给<strong>跟单</strong>' },
-        { num: '⑤', html: '至少<strong>提前一天</strong>通知以下人员发货时间<br><span style="color:#9ca0ab;font-size:0.88em"><strong>唐工</strong> · <strong>杨小玲</strong> · <strong>项目跟单</strong></span>' },
+        { num: '⑤', html: '至少<strong>提前一天</strong>通知以下人员发货时间<br><span style="color:#9ca0ab;font-size:0.88em"><strong>唐工（C类需要通知龙工）</strong> · <strong>杨小玲</strong> · <strong>项目跟单</strong></span>' },
         { num: '⑥', html: '发货当天提前告知<strong>项目跟单</strong>车辆与集装箱信息' }
       ];
     }
