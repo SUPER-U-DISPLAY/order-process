@@ -1966,7 +1966,7 @@
         <div class="tk-legend-item"><div class="tk-legend-dot" style="background:var(--tk-role-sales)"></div>业务员</div>
         <div class="tk-legend-item"><div class="tk-legend-dot" style="background:var(--tk-role-designer)"></div>设计师</div>
         <div class="tk-legend-item"><div class="tk-legend-dot" style="background:var(--tk-role-craft)"></div>工艺师</div>
-        <div class="tk-legend-item"><div class="tk-legend-dot" style="background:var(--tk-role-leo)"></div>Leo/Jay</div>
+        <div class="tk-legend-item"><div class="tk-legend-dot" style="background:var(--tk-role-leo)"></div>Jay</div>
         <div class="tk-legend-item"><div class="tk-legend-dot" style="background:var(--tk-role-shipping)"></div>船务</div>
       </div>
       <div class="tk-table-container">
@@ -2492,7 +2492,7 @@ const tkFlowData = {
     name: 'Ricky推来的项目',
     steps: [
       { num: 1, owner: 'Ricky', task: '发送项目', detail: '1.发送项目资料\n2.确认项目合作类型：展架与安装都做、只做展架、只做安装（报安装材料）' },
-      { num: 2, owner: 'Jay&Leo', task: '分配项目', detail: '根据合作类型分配项目跟进人：\n1.展架和安装都做：建群分配给业务检查资料并安排报价，如有装修材料，由Ricky整理清单，超哥单独报安装材料价格\n2.只做展架：分配给业务检查资料并安排报价\n3.只做安装：安排超哥单独报安装材料价格' },
+      { num: 2, owner: 'Jay', task: '分配项目', detail: '根据合作类型分配项目跟进人：\n1.展架和安装都做：建群分配给业务检查资料并安排报价，如有装修材料，由Ricky整理清单，超哥单独报安装材料价格\n2.只做展架：分配给业务检查资料并安排报价\n3.只做安装：安排超哥单独报安装材料价格' },
       { num: 3, owner: '业务员', task: '内部报价', detail: '项目报价资料整理，含翻译和报价表格整理，需要备注是否为Turnkey项目' },
       { num: 4, owner: '业务员', task: '制作报价单', detail: '根据合作类型选择不同报价模板：\n1.展架和安装都做：用Coherent Fitout模板\n2.只做展架：用Super U模板\n3.只做安装（安装材料）：用Super U模板' },
       { num: 5, owner: 'Ricky', task: '客户报价', detail: 'Ricky给客户报价\n（Ricky推过来的项目，均有Ricky对接客户）' },
@@ -2504,7 +2504,7 @@ const tkFlowData = {
       { num: 11, owner: '业务员', task: '修改与调价', detail: '1.如因内部报价疏漏、前期考虑不周等原因修改导致成本增加，SUPER U承担变动的成本\n2.如因成交后需要配合现场合规与安装要求等原因修改导致成本增加，Coherent Fitout承担变动的成本\n3.客户主动要求修改，客户承担变动成本' },
       { num: 12, owner: '业务员', task: '提交大货确认书', detail: '1.按内部正常流程提交大货确认书，客户背调表信息填写终端信息' },
       { num: 13, owner: '业务员', task: '订舱', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
-      { num: 14, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：Apple跟单，项目跟单超哥负责验所有货物' },
+      { num: 14, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：业务主管安排跟单，项目跟单超哥负责验所有货物' },
       { num: 15, owner: '业务员', task: '尾款收取', detail: 'Coherent Fitout向Super U支付尾款' },
       { num: 16, owner: '业务员', task: '发货', detail: '按正常项目发货流程安排发货' },
       { num: 17, owner: '业务员', task: '售后', detail: '1.产品漏发错发或质量问题\n2.运输问题' }
@@ -2514,9 +2514,9 @@ const tkFlowData = {
     name: '直接报价项目',
     steps: [
       { num: 1, owner: '业务员', task: '提交报价资料', detail: '项目报价资料整理，含翻译和报价表格整理' },
-      { num: 2, owner: 'Leo&Jay', task: '通过报价资料审核，确定需要报Fit-out的项目', detail: '满足Fitout条件的客户说明：\n1.澳洲终端客户\n2.澳洲品牌客户\n3.澳洲设计公司\n4.注意：因直接竞争等冲突，澳洲或新西兰的安装公司或同行不报Fit-out项目' },
+      { num: 2, owner: 'Jay', task: '通过报价资料审核，确定需要报Fit-out的项目', detail: '满足Fitout条件的客户说明：\n1.澳洲终端客户\n2.澳洲品牌客户\n3.澳洲设计公司\n4.注意：因直接竞争等冲突，澳洲或新西兰的安装公司或同行不报Fit-out项目' },
       { num: 3, owner: '业务员', task: '与客户沟通', detail: '1.介绍SUPER U Fit-out业务\n2.询问客户是否需该服务\n3.询问客户是否有稳定合作的Fit-out团队\n4.了解项目所处阶段（竞标中，已拿下等）\n5.沟通信息截图并发送Leo' },
-      { num: 4, owner: 'Leo&Jay', task: '转发报价资料与洽谈', detail: '1.由Leo&Jay发起微信群聊，将业务员，Ricky和Van拉进微信群沟通\n2.业务员转发报价资料到群' },
+      { num: 4, owner: 'Jay', task: '转发报价资料与洽谈', detail: '1.由Jay发起微信群聊，将业务员，Ricky和Van拉进微信群沟通\n2.业务员转发报价资料到群' },
       { num: 5, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对于Fit-out报价，检查报价资料是否齐全\n2.罗列需要了解的信息或其他资料（项目地址等），业务员向客户收集信息\n3.确定Fit-out报价时间' },
       { num: 6, owner: '业务员', task: 'Joinery英文报价', detail: '负责Joinery英文报价表整理，并发送给Ricky\n注意：海运条款报DDP' },
       { num: 7, owner: '业务员+船务吴小杏Carrie', task: 'DDP费用报价', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
@@ -2531,7 +2531,7 @@ const tkFlowData = {
       { num: 16, owner: '业务员', task: '修改与调价', detail: '1.如因内部报价疏漏、前期考虑不周等原因修改导致成本增加，SUPER U承担变动的成本\n2.如因成交后需要配合现场合规与安装要求等原因修改导致成本增加，Coherent Fitout承担变动的成本\n3.客户主动要求修改，客户承担变动成本' },
       { num: 17, owner: '业务员', task: '提交大货确认书', detail: '1.按内部正常流程提交大货确认书，客户背调表信息填写终端信息' },
       { num: 18, owner: '业务员', task: '订舱', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
-      { num: 19, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：Apple跟单，项目跟单负责验所有货物' },
+      { num: 19, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：业务主管安排跟单，项目跟单负责验所有货物' },
       { num: 20, owner: '业务员', task: '尾款收取', detail: 'Coherent Fitout向Super U支付尾款' },
       { num: 21, owner: '业务员', task: '发货', detail: '按正常项目发货流程安排发货' },
       { num: 22, owner: '业务员', task: '售后', detail: '1.产品漏发错发或质量问题\n2.运输问题' }
@@ -2541,9 +2541,9 @@ const tkFlowData = {
     name: '设计单项目',
     steps: [
       { num: 1, owner: '业务员', task: '3D设计单洽谈', detail: '业务员按正常流程进行3D效果图订单的洽谈' },
-      { num: 2, owner: 'Leo', task: '澳洲区域的设计单成交后，Leo通过设计单资料的审核，确定需要报Fit-out的项目', detail: '满足Fitout条件的客户说明：\n1.澳洲终端客户\n2.澳洲品牌客户\n3.注意：因直接竞争等冲突，澳洲或新西兰的安装公司或同行不报Fit-out项目' },
+      { num: 2, owner: 'Jay', task: '澳洲区域的设计单成交后，Jay通过设计单资料的审核，确定需要报Fit-out的项目', detail: '满足Fitout条件的客户说明：\n1.澳洲终端客户\n2.澳洲品牌客户\n3.注意：因直接竞争等冲突，澳洲或新西兰的安装公司或同行不报Fit-out项目' },
       { num: 3, owner: '业务员', task: '与客户沟通', detail: '1.介绍SUPER U Fit-out业务\n2.询问客户是否需该服务\n3.询问客户是否有稳定合作的Fit-out团队\n4.沟通信息截图并发送Leo' },
-      { num: 4, owner: 'Leo', task: '转发设计单资料与洽谈', detail: '1.由Leo发起微信群聊，将业务员，Ricky和Van和设计师拉进微信群沟通\n2.业务员转发设计资料到群' },
+      { num: 4, owner: 'Jay', task: '转发设计单资料与洽谈', detail: '1.由Jay发起微信群聊，将业务员，Ricky和Van和设计师拉进微信群沟通\n2.业务员转发设计资料到群' },
       { num: 5, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对设计单资料进行审核，并向设计师说明注意事项（关于澳洲合规等对布局图进行建议说明）\n2.罗列需要了解的信息或其他资料（项目地址等），业务员向客户收集信息' },
       { num: 6, owner: '业务员', task: '资料收集', detail: '业务员根据Ricky提供的信息向客户进行收集' },
       { num: 7, owner: '设计师', task: '布局图制作', detail: '1.完成布局图设计并发微信群\n2.Ricky对我司提供的布局图进行审核和建议等\n\n注意：关于布局图估算Joinery的预算流程正常进行' },
