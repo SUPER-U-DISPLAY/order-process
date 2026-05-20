@@ -134,6 +134,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
   }
   .nav-logo {
     width: 28px; height: 28px;
@@ -1392,6 +1394,11 @@
   overflow: hidden;
   border: 1px solid var(--tk-border);
 }
+.tk-root .tk-modal-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 24px 32px;
+}
 .tk-root .tk-modal-header {
   padding: 24px 32px;
   border-bottom: 1px solid var(--tk-border);
@@ -1798,10 +1805,10 @@
 <!-- ===== Nav Bar ===== -->
 <nav class="nav-bar">
   <div class="nav-inner">
-    <div class="nav-brand">
+    <a href="#" class="nav-brand" onclick="goHome();return false;">
       <div class="nav-logo">OM</div>
       <div class="nav-title">订单流程</div>
-    </div>
+    </a>
     <div class="nav-stepper">
       <span class="step-pill active" id="navBc1">选组别</span>
       <span class="step-connector" id="sc1"></span>
@@ -2072,7 +2079,7 @@
     <div id="flowContainer"></div>
   </div>
 
-  <div class="footer">内部流程参考 · 请以最新版本为准</div>
+  <div class="footer">内部流程参考 · 请以最新版本为准 · v20260520</div>
 </div>
 
 <!-- ===== Completion Overlay ===== -->
@@ -2196,6 +2203,18 @@ function backToHome() {
   showPanel(1);
 }
 
+function goHome() {
+  selectedLevel = '';
+  selectedTask = '';
+  selectedModifyType = '';
+  selectedShippingType = '';
+  completed = false;
+  tkCurrentType = null;
+  tkCurrentStep = 0;
+  document.getElementById('tkRoot').classList.remove('visible');
+  showPanel(1);
+}
+
 function resetFlow() {
   document.getElementById('completionBanner').classList.remove('show');
   completed = false;
@@ -2219,9 +2238,9 @@ function getFlowData(level, task) {
     approverTag = '提交给许洋';
     scheduler = '许洋';
   } else {
-    approver = 'Jay';
-    approverTag = '提交给Jay';
-    scheduler = 'Jay';
+    approver = '玉鹏';
+    approverTag = '提交给玉鹏';
+    scheduler = '玉鹏';
   }
   
   const data = { sections: [] };
@@ -2259,10 +2278,10 @@ function getFlowData(level, task) {
         var printInfo, printDetail;
         if (level === '高级' || level === '资深') {
           printInfo = '打印 <span class="hl">3份</span> 纸质版下单书';
-          printDetail = '<strong>LEO</strong> × 1 ｜ <strong>工艺组长赖鹏程</strong> × 1 ｜ <strong>唐工</strong> × 1';
+          printDetail = '<strong>业务组长</strong> × 1 ｜ <strong>工艺组长赖鹏程</strong> × 1 ｜ <strong>唐工</strong> × 1';
         } else {
-          printInfo = '打印 <span class="hl">4份</span> 纸质版下单书';
-          printDetail = '<strong>LEO</strong> × 1 ｜ <strong>业务组长</strong> × 1 ｜ <strong>工艺组长赖鹏程</strong> × 1 ｜ <strong>唐工</strong> × 1';
+          printInfo = '打印 <span class="hl">3份</span> 纸质版下单书';
+          printDetail = '<strong>业务组长</strong> × 1 ｜ <strong>工艺组长赖鹏程</strong> × 1 ｜ <strong>唐工</strong> × 1';
         }
         return [
           { num: '①', html: '上传文件到<strong>微盘</strong>' },
@@ -2499,12 +2518,12 @@ const tkFlowData = {
       { num: 6, owner: 'Ricky', task: '成交反馈', detail: 'Ricky反馈项目是否成交，如成交则往下推进' },
       { num: 7, owner: '业务员', task: '制定时间表', detail: '与Ricky核对项目交期，制定项目时间表' },
       { num: 8, owner: '业务员', task: '提交大货下单书', detail: '业务员按内部流程提交大货下单书，需要备注项目是否为Turnkey' },
-      { num: 9, owner: '工艺师', task: '制作施工图', detail: '按清单要求及交期制作施工图、LOGO文件，一并提交给Ricky\nTurnkey成效的项目，Ricky会审核Joinery工艺图，并给出相关意见' },
-      { num: 10, owner: '业务员、工艺师', task: '图纸沟通', detail: '1、业务员统一对接Ricky，由Ricky对接客户\n2、工艺师在项目群中与Ricky沟通工艺问题\n\nJoinery工艺图由Ricky审阅并核准后由业务对接客户，邮件cc Ricky，并把反馈意见着重标注，转发Ricky邮件或微信。施工相关额外装材由Ricky审核确认料单和施工图。Ricky建议对Joinery施工图实行单项确认汇总的方式，给出改动原因和对应方案。\n\n1.工艺部核对设计图与实际工艺图出入，列出清单、原因和对应方案（Ricky参与图纸沟通和方案制定），转交业务部整理翻译。（比如，材质、颜色、结构，现场尺寸，合规等等）\n2.业务把项目问题、清单连同设计图添加标注一并发给客人确认，跟踪反馈，以此循环直至流程完结。所有与客人沟通事项先发Ricky审阅。\n3. Ricky审阅邮件内容，给出意见，Ricky可以直接回复的会直接回复，单项确认。Ricky无权回复的由业务整理好后，邮件客人并cc Ricky。'},
+      { num: 9, owner: '工艺师', task: '制作工艺图', detail: '按清单要求及交期制作工艺图、LOGO文件，一并提交给Ricky\nTurnkey成交的项目，Ricky会审核Joinery工艺图，并给出相关意见' },
+      { num: 10, owner: '业务员、工艺师', task: '图纸沟通', detail: '1、业务员统一对接Ricky，由Ricky对接客户\n2、工艺师在项目群中与Ricky沟通工艺问题\n\nJoinery工艺图由Ricky审阅并核准后由业务对接客户，邮件cc Ricky，并把反馈意见着重标注，转发Ricky邮件或微信。施工相关额外装材由Ricky审核确认料单和工艺图。Ricky建议对Joinery工艺图实行单项确认汇总的方式，给出改动原因和对应方案。\n\n1.工艺部核对设计图与实际工艺图出入，列出清单、原因和对应方案（Ricky参与图纸沟通和方案制定），转交业务部整理翻译。（比如，材质、颜色、结构，现场尺寸，合规等等）\n2.业务把项目问题、清单以Excel表格形式连同设计图添加标注一并发给客人确认，跟踪反馈，以此循环直至流程完结。所有与客人沟通事项先发Ricky审阅。\n3. Ricky审阅邮件内容，给出意见，Ricky可以直接回复的会直接回复，单项确认。Ricky无权回复的由业务整理好后，邮件客人并cc Ricky。'},
       { num: 11, owner: '业务员', task: '修改与调价', detail: '1.如因内部报价疏漏、前期考虑不周等原因修改导致成本增加，SUPER U承担变动的成本\n2.如因成交后需要配合现场合规与安装要求等原因修改导致成本增加，Coherent Fitout承担变动的成本\n3.客户主动要求修改，客户承担变动成本' },
       { num: 12, owner: '业务员', task: '提交大货确认书', detail: '1.按内部正常流程提交大货确认书，客户背调表信息填写终端信息' },
       { num: 13, owner: '业务员', task: '订舱', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
-      { num: 14, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：业务主管安排跟单，项目跟单超哥负责验所有货物' },
+      { num: 14, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：Jay安排业务跟单，发货前由项目跟单超哥负责验所有货物' },
       { num: 15, owner: '业务员', task: '尾款收取', detail: 'Coherent Fitout向Super U支付尾款' },
       { num: 16, owner: '业务员', task: '发货', detail: '按正常项目发货流程安排发货' },
       { num: 17, owner: '业务员', task: '售后', detail: '1.产品漏发错发或质量问题\n2.运输问题' }
@@ -2515,9 +2534,9 @@ const tkFlowData = {
     steps: [
       { num: 1, owner: '业务员', task: '提交报价资料', detail: '项目报价资料整理，含翻译和报价表格整理' },
       { num: 2, owner: 'Jay', task: '通过报价资料审核，确定需要报Fit-out的项目', detail: '满足Fitout条件的客户说明：\n1.澳洲终端客户\n2.澳洲品牌客户\n3.澳洲设计公司\n4.注意：因直接竞争等冲突，澳洲或新西兰的安装公司或同行不报Fit-out项目' },
-      { num: 3, owner: '业务员', task: '与客户沟通', detail: '1.介绍SUPER U Fit-out业务\n2.询问客户是否需该服务\n3.询问客户是否有稳定合作的Fit-out团队\n4.了解项目所处阶段（竞标中，已拿下等）\n5.沟通信息截图并发送Leo' },
+      { num: 3, owner: '业务员', task: '与客户沟通', detail: '1.介绍SUPER U Fit-out业务\n2.询问客户是否需该服务\n3.询问客户是否有稳定合作的Fit-out团队\n4.了解项目所处阶段（竞标中，已拿下等）\n5.沟通信息截图并发送Jay' },
       { num: 4, owner: 'Jay', task: '转发报价资料与洽谈', detail: '1.由Jay发起微信群聊，将业务员，Ricky和Van拉进微信群沟通\n2.业务员转发报价资料到群' },
-      { num: 5, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对于Fit-out报价，检查报价资料是否齐全\n2.罗列需要了解的信息或其他资料（项目地址等），业务员向客户收集信息\n3.确定Fit-out报价时间' },
+      { num: 5, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对于Fit-out报价，检查报价资料是否齐全\n2.罗列需要了解的信息或其他资料（项目地址等），以check list形式发给业务\n3.确定Fit-out报价时间' },
       { num: 6, owner: '业务员', task: 'Joinery英文报价', detail: '负责Joinery英文报价表整理，并发送给Ricky\n注意：海运条款报DDP' },
       { num: 7, owner: '业务员+船务吴小杏Carrie', task: 'DDP费用报价', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
       { num: 8, owner: 'Ricky', task: 'Fit-out报价信息整合', detail: 'Fit-out报价信息包含以下：\n1.项目地址\n2.PRELIMINARIES (Site Supervision, Project Management, Final Clean up, Insurance, Equipment Hire, Transportation, Accommodation)\n3.WALL AND CEILING\n4.GLAZING\n5.PAINTING\n6.FLOOR WORKS\n7.SIGNAGE\n8.Joinery Works\n9.Mechanical Works\n10.Electrical Works\n11.Miscellaneous\n12.所有费用+GST\n\nPayment term：\n30% Deposit on acceptance of quote\n30% On the first day of site works\n35% After completion, before release OC\n5% Retention after defects been completed\n\nFit-out报价前期由Ricky统筹负责。后续可以分批陆续释放施工工费、材料、本地材料核算和施工文案整理等行政事项。所有Fit-out报价均可从Ricky制作的线上数字项目管理平台查阅，下载。'},
@@ -2526,12 +2545,12 @@ const tkFlowData = {
       { num: 11, owner: '业务员', task: 'Fit-out报价反馈追踪', detail: '业务员负责Fit-out项目报价的反馈追踪，每周2-3次跟进，根据最终成交结果选择推进流程：\n1.如输单，所有流程终止\n2.如只成交展架，业务员按常规项目推进，Ricky终止介入该项目\n3.如只成交了Fit-out，由Ricky自行推进，业务员终止介入该项目\n4.如成交了展架及Fit-out，按下列流程继续推进' },
       { num: 12, owner: '业务员', task: '制定时间表', detail: '与Ricky核对项目交期，制定项目时间表' },
       { num: 13, owner: '业务员', task: '提交大货下单书', detail: '业务员按内部流程提交大货下单书，需要备注项目是否为Turnkey' },
-      { num: 14, owner: '工艺师', task: '制作施工图', detail: '按清单要求及交期制作施工图、LOGO文件，一并提交给Ricky\nTurnkey成效的项目，Ricky会审核Joinery工艺图，并给出相关意见' },
-      { num: 15, owner: '业务员、工艺师', task: '图纸沟通', detail: '1、业务员统一对接Ricky，由Ricky对接客户\n2、工艺师在项目群中与Ricky沟通工艺问题\n\nJoinery工艺图由Ricky审阅并核准后由业务对接客户，邮件cc Ricky，并把反馈意见着重标注，转发Ricky邮件或微信。施工相关额外装材由Ricky审核确认料单和施工图。Ricky建议对Joinery施工图实行单项确认汇总的方式，给出改动原因和对应方案。\n\n1.工艺部核对设计图与实际工艺图出入，列出清单、原因和对应方案（Ricky参与图纸沟通和方案制定），转交业务部整理翻译。（比如，材质、颜色、结构，现场尺寸，合规等等）\n2.业务把项目问题、清单连同设计图添加标注一并发给客人确认，跟踪反馈，以此循环直至流程完结。所有与客人沟通事项先发Ricky审阅。\n3. Ricky审阅邮件内容，给出意见，Ricky可以直接回复的会直接回复，单项确认。Ricky无权回复的由业务整理好后，邮件客人并cc Ricky。'},
+      { num: 14, owner: '工艺师', task: '制作工艺图', detail: '按清单要求及交期制作工艺图、LOGO文件，一并提交给Ricky\nTurnkey成交的项目，Ricky会审核Joinery工艺图，并给出相关意见' },
+      { num: 15, owner: '业务员、工艺师', task: '图纸沟通', detail: '1、业务员统一对接Ricky，由Ricky对接客户\n2、工艺师在项目群中与Ricky沟通工艺问题\n\nJoinery工艺图由Ricky审阅并核准后由业务对接客户，邮件cc Ricky，并把反馈意见着重标注，转发Ricky邮件或微信。施工相关额外装材由Ricky审核确认料单和工艺图。Ricky建议对Joinery工艺图实行单项确认汇总的方式，给出改动原因和对应方案。\n\n1.工艺部核对设计图与实际工艺图出入，列出清单、原因和对应方案（Ricky参与图纸沟通和方案制定），转交业务部整理翻译。（比如，材质、颜色、结构，现场尺寸，合规等等）\n2.业务把项目问题、清单以Excel表格形式连同设计图添加标注一并发给客人确认，跟踪反馈，以此循环直至流程完结。所有与客人沟通事项先发Ricky审阅。\n3. Ricky审阅邮件内容，给出意见，Ricky可以直接回复的会直接回复，单项确认。Ricky无权回复的由业务整理好后，邮件客人并cc Ricky。'},
       { num: 16, owner: '业务员', task: '修改与调价', detail: '1.如因内部报价疏漏、前期考虑不周等原因修改导致成本增加，SUPER U承担变动的成本\n2.如因成交后需要配合现场合规与安装要求等原因修改导致成本增加，Coherent Fitout承担变动的成本\n3.客户主动要求修改，客户承担变动成本' },
       { num: 17, owner: '业务员', task: '提交大货确认书', detail: '1.按内部正常流程提交大货确认书，客户背调表信息填写终端信息' },
       { num: 18, owner: '业务员', task: '订舱', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
-      { num: 19, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：业务主管安排跟单，项目跟单负责验所有货物' },
+      { num: 19, owner: '业务员', task: '验货', detail: '根据合作类型执行验货工作：\n1.展架和安装都做：业务员与项目跟单负责验所有货物，与Ricky视频验货\n2.只做展架：业务员与项目跟单负责验所有货物，与Ricky视频验货\n3.只做安装（安装材料）：Jay安排业务跟单，发货前由项目跟单超哥负责验所有货物' },
       { num: 20, owner: '业务员', task: '尾款收取', detail: 'Coherent Fitout向Super U支付尾款' },
       { num: 21, owner: '业务员', task: '发货', detail: '按正常项目发货流程安排发货' },
       { num: 22, owner: '业务员', task: '售后', detail: '1.产品漏发错发或质量问题\n2.运输问题' }
@@ -2542,17 +2561,17 @@ const tkFlowData = {
     steps: [
       { num: 1, owner: '业务员', task: '3D设计单洽谈', detail: '业务员按正常流程进行3D效果图订单的洽谈' },
       { num: 2, owner: 'Jay', task: '澳洲区域的设计单成交后，Jay通过设计单资料的审核，确定需要报Fit-out的项目', detail: '满足Fitout条件的客户说明：\n1.澳洲终端客户\n2.澳洲品牌客户\n3.注意：因直接竞争等冲突，澳洲或新西兰的安装公司或同行不报Fit-out项目' },
-      { num: 3, owner: '业务员', task: '与客户沟通', detail: '1.介绍SUPER U Fit-out业务\n2.询问客户是否需该服务\n3.询问客户是否有稳定合作的Fit-out团队\n4.沟通信息截图并发送Leo' },
+      { num: 3, owner: '业务员', task: '与客户沟通', detail: '1.介绍SUPER U Fit-out业务\n2.询问客户是否需该服务\n3.询问客户是否有稳定合作的Fit-out团队\n4.了解项目所处阶段（竞标中，已拿下等）\n5.沟通信息截图并发送Jay' },
       { num: 4, owner: 'Jay', task: '转发设计单资料与洽谈', detail: '1.由Jay发起微信群聊，将业务员，Ricky和Van和设计师拉进微信群沟通\n2.业务员转发设计资料到群' },
-      { num: 5, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对设计单资料进行审核，并向设计师说明注意事项（关于澳洲合规等对布局图进行建议说明）\n2.罗列需要了解的信息或其他资料（项目地址等），业务员向客户收集信息' },
+      { num: 5, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对设计单资料进行审核，并向设计师说明注意事项（关于澳洲合规等对布局图进行建议说明）\n2.罗列需要了解的信息或其他资料（项目地址等），以check list形式发给业务' },
       { num: 6, owner: '业务员', task: '资料收集', detail: '业务员根据Ricky提供的信息向客户进行收集' },
       { num: 7, owner: '设计师', task: '布局图制作', detail: '1.完成布局图设计并发微信群\n2.Ricky对我司提供的布局图进行审核和建议等\n\n注意：关于布局图估算Joinery的预算流程正常进行' },
       { num: 8, owner: '业务员', task: '布局图客户确认', detail: '1.业务员收到布局图之后翻译成英文并发送给客户确定\n2.对布局图中关于澳洲合规的解释和应用说明\n3.与客户洽谈Joinery预算' },
       { num: 9, owner: '设计师', task: '效果图制作', detail: '1.完成效果图设计并发微信群\n2.Ricky对我司提供的效果图进行审核和建议等\n\n注意：关于效果图建模估算Joinery的预算流程正常进行' },
       { num: 10, owner: '业务员', task: '效果图客户确认', detail: '1.业务员收到效果图之后翻译成英文并发送给客户确定\n2.对效果图中关于澳洲合规的解释和应用说明' },
       { num: 11, owner: '设计师', task: '设计报价资料整理', detail: '最终效果图确定后，进行报价资料的制作' },
-      { num: 12, owner: '业务员', task: '报价资料整理与发送', detail: '1.根据效果图和报价资料，整理成项目报价资料文件发送至店长或Leo进行Joinery报价\n2.将整理好的报价资料发送至微信群' },
-      { num: 13, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对于Fit-out报价，检查报价资料是否齐全\n2.罗列需要了解的信息或其他资料（项目地址等），业务员向客户收集信息\n3.确定Fit-out报价时间' },
+      { num: 12, owner: '业务员', task: '报价资料整理与发送', detail: '1.根据效果图和报价资料，整理成项目报价资料文件发送至店长或Jay进行Joinery报价\n2.将整理好的报价资料发送至微信群' },
+      { num: 13, owner: 'Ricky', task: 'Fit-out报价', detail: '1.对于Fit-out报价，检查报价资料是否齐全\n2.罗列需要了解的信息或其他资料（项目地址等），以check list形式发给业务\n3.确定Fit-out报价时间' },
       { num: 14, owner: '业务员', task: 'Joinery英文报价', detail: '负责Joinery英文报价表整理，并发送给Ricky\n注意：海运条款报DDP' },
       { num: 15, owner: '业务员+船务吴小杏Carrie', task: 'DDP费用报价', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
       { num: 16, owner: 'Ricky', task: 'Fit-out报价信息整合', detail: 'Fit-out报价信息包含以下：\n1.项目地址\n2.PRELIMINARIES (Site Supervision, Project Management, Final Clean up, Insurance, Equipment Hire, Transportation, Accommodation)\n3.WALL AND CEILING\n4.GLAZING\n5.PAINTING\n6.FLOOR WORKS\n7.SIGNAGE\n8.Joinery Works\n9.Mechanical Works\n10.Electrical Works\n11.Miscellaneous\n12.所有费用+GST\n13.RDM图纸费用\n\nPayment term：\n30% Deposit on acceptance of quote\n30% On the first day of site works\n35% After completion, before release OC\n5% Retention after defects been completed' },
@@ -2561,8 +2580,8 @@ const tkFlowData = {
       { num: 19, owner: '业务员', task: 'Fit-out报价反馈追踪', detail: '业务员负责Fit-out项目报价的反馈追踪，每周2-3次跟进，根据最终成交结果选择推进流程：\n1.如输单，所有流程终止\n2.如只成交展架，业务员按常规项目推进，Ricky终止介入该项目\n3.如只成交了Fit-out，由Ricky自行推进，业务员终止介入该项目\n4.如成交了展架及Fit-out，按下列流程继续推进' },
       { num: 20, owner: '业务员', task: '制定时间表', detail: '与Ricky核对项目交期，制定项目时间表' },
       { num: 21, owner: '业务员', task: '提交大货下单书', detail: '业务员按内部流程提交大货下单书，需要备注项目是否为Turnkey' },
-      { num: 22, owner: '工艺师', task: '制作施工图', detail: '按清单要求及交期制作施工图、LOGO文件，一并提交给Ricky\nTurnkey成效的项目，Ricky会审核Joinery工艺图，并给出相关意见' },
-      { num: 23, owner: '业务员、工艺师', task: '图纸沟通', detail: '1、业务员统一对接Ricky，由Ricky对接客户\n2、工艺师在项目群中与Ricky沟通工艺问题\n\nJoinery工艺图由Ricky审阅并核准后由业务对接客户，邮件cc Ricky，并把反馈意见着重标注，转发Ricky邮件或微信。施工相关额外装材由Ricky审核确认料单和施工图。Ricky建议对Joinery施工图实行单项确认汇总的方式，给出改动原因和对应方案。\n\n1.工艺部核对设计图与实际工艺图出入，列出清单、原因和对应方案（Ricky参与图纸沟通和方案制定），转交业务部整理翻译。（比如，材质、颜色、结构，现场尺寸，合规等等）\n2.业务把项目问题、清单连同设计图添加标注一并发给客人确认，跟踪反馈，以此循环直至流程完结。所有与客人沟通事项先发Ricky审阅。\n3. Ricky审阅邮件内容，给出意见，Ricky可以直接回复的会直接回复，单项确认。Ricky无权回复的由业务整理好后，邮件客人并cc Ricky。'},
+      { num: 22, owner: '工艺师', task: '制作工艺图', detail: '按清单要求及交期制作工艺图、LOGO文件，一并提交给Ricky\nTurnkey成交的项目，Ricky会审核Joinery工艺图，并给出相关意见' },
+      { num: 23, owner: '业务员、工艺师', task: '图纸沟通', detail: '1、业务员统一对接Ricky，由Ricky对接客户\n2、工艺师在项目群中与Ricky沟通工艺问题\n\nJoinery工艺图由Ricky审阅并核准后由业务对接客户，邮件cc Ricky，并把反馈意见着重标注，转发Ricky邮件或微信。施工相关额外装材由Ricky审核确认料单和工艺图。Ricky建议对Joinery工艺图实行单项确认汇总的方式，给出改动原因和对应方案。\n\n1.工艺部核对设计图与实际工艺图出入，列出清单、原因和对应方案（Ricky参与图纸沟通和方案制定），转交业务部整理翻译。（比如，材质、颜色、结构，现场尺寸，合规等等）\n2.业务把项目问题、清单以Excel表格形式连同设计图添加标注一并发给客人确认，跟踪反馈，以此循环直至流程完结。所有与客人沟通事项先发Ricky审阅。\n3. Ricky审阅邮件内容，给出意见，Ricky可以直接回复的会直接回复，单项确认。Ricky无权回复的由业务整理好后，邮件客人并cc Ricky。'},
       { num: 24, owner: '业务员', task: '修改与调价', detail: '1.如因内部报价疏漏、前期考虑不周等原因修改导致成本增加，SUPER U承担变动的成本\n2.如因成交后需要配合现场合规与安装要求等原因修改导致成本增加，Coherent Fitout承担变动的成本\n3.客户主动要求修改，客户承担变动成本' },
       { num: 25, owner: '业务员', task: '提交大货确认书', detail: '1.按内部正常流程提交大货确认书，客户背调表信息填写终端信息' },
       { num: 26, owner: '业务员', task: '订舱', detail: '1.业务员将该项目的货柜柜型和数量以及项目地址等相关信息给到船务\n2.船务根据该信息报出门到门DDP费用' },
